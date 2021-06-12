@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, Platform, Button } from 'react-native'
+import { StyleSheet, View, Text, Platform, Button } from 'react-native'
 import utcToZonedTime from 'date-fns-tz/utcToZonedTime'
 import zonedTimeToUtc from 'date-fns-tz/zonedTimeToUtc'
 import { perf } from './utils'
@@ -82,7 +82,13 @@ export const Benchmark1 = () => {
         const fn = () => { 15 + 25 + 35 * 150 }
         fn()
       })
-    }, `run reference fn ${TIMES} times`)
+    }, `run reference fn 1 ${TIMES} times`)
+
+    perf(() => {
+      const t = (
+        <View><Text>{'AAABBBCCC'}</Text></View>
+      )
+    }, `run reference fn 2 ${TIMES} times`)
 
     console.log('=== END ===')
   }
