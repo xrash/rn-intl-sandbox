@@ -12,6 +12,8 @@ if (Platform.OS === 'android') {
   void import('date-time-format-timezone')
 }
 
+const TIMES = 150
+
 export const Benchmark1 = () => {
 
   const run = () => {
@@ -20,33 +22,33 @@ export const Benchmark1 = () => {
     console.log('got timezone:', Intl.DateTimeFormat().resolvedOptions().timeZone)
 
     perf(() => {
-      range(50).map(() => {
+      range(TIMES).map(() => {
         Intl.DateTimeFormat()
       })
-    }, 'run Intl.DateTimeFormat() 50 times')
+    }, `run Intl.DateTimeFormat() ${TIMES} times`)
 
     perf(() => {
-      range(50).map(() => {
+      range(TIMES).map(() => {
         Intl.DateTimeFormat().resolvedOptions()
       })
-    }, 'run Intl.DateTimeFormat().resolvedOptions() 50 times')
+    }, `run Intl.DateTimeFormat().resolvedOptions() ${TIMES} times`)
 
     perf(() => {
-      range(50).map(() => {
+      range(TIMES).map(() => {
         const now = new Date()
         utcToZonedTime(now, 'America/Sao_Paulo')
       })
-    }, 'run utcToZonedTime(America/Sao_Paulo)  50 times')
+    }, `run utcToZonedTime(America/Sao_Paulo) ${TIMES} times`)
 
     perf(() => {
-      range(50).map(() => {
+      range(TIMES).map(() => {
         const now = new Date()
         utcToZonedTime(now, undefined)
       })
-    }, 'run utcToZonedTime(undefined)  50 times')
+    }, `run utcToZonedTime(undefined) ${TIMES} times`)
 
     perf(() => {
-      range(50).map(() => {
+      range(TIMES).map(() => {
         const date = new Date()
         const fmt = 'd MMM yyyy'
         const timeZone = 'America/Sao_Paulo'
@@ -54,10 +56,10 @@ export const Benchmark1 = () => {
           timeZone,
         })
       })
-    }, 'run format() with timezone America/Sao_Paulo 50 times')
+    }, `run format() with timezone America/Sao_Paulo ${TIMES} times`)
 
     perf(() => {
-      range(50).map(() => {
+      range(TIMES).map(() => {
         const date = new Date()
         const fmt = 'd MMM yyyy'
         const timeZone = undefined
@@ -65,15 +67,22 @@ export const Benchmark1 = () => {
           timeZone,
         })
       })
-    }, 'run format() with timezone undefined 50 times')
+    }, `run format() with timezone undefined ${TIMES} times`)
 
     perf(() => {
-      range(50).map(() => {
+      range(TIMES).map(() => {
         const date = new Date()
         const fmt = 'd MMM yyyy'
         format(date, fmt)
       })
-    }, 'run format() without timezone 50 times')
+    }, `run format() without timezone ${TIMES} times`)
+
+    perf(() => {
+      range(TIMES).map(() => {
+        const fn = () => { 15 + 25 + 35 * 150 }
+        fn()
+      })
+    }, `run reference fn ${TIMES} times`)
 
     console.log('=== END ===')
   }
