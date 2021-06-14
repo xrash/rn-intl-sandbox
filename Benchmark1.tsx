@@ -5,6 +5,7 @@ import zonedTimeToUtc from 'date-fns-tz/zonedTimeToUtc'
 import { perf } from './utils'
 import range from 'lodash/range'
 import format from 'date-fns-tz/format'
+import * as Localization from 'expo-localization'
 
 if (Platform.OS === 'android') {
   void import('intl')
@@ -17,80 +18,88 @@ const TIMES = 150
 export const Benchmark1 = () => {
 
   const run = () => {
-    console.log('=== START ===')
 
-    console.log('got timezone:', Intl.DateTimeFormat().resolvedOptions().timeZone)
+    const dotest = async () => {
+      const expoLocalization = await Localization.getLocalizationAsync()
+      console.log('expo-localization', expoLocalization)
 
-    perf(() => {
-      range(TIMES).map(() => {
-        Intl.DateTimeFormat()
-      })
-    }, `run Intl.DateTimeFormat() ${TIMES} times`)
+      console.log('Intl.DateTimeFormat().resolvedOptions()', Intl.DateTimeFormat().resolvedOptions())
 
-    perf(() => {
-      range(TIMES).map(() => {
-        Intl.DateTimeFormat().resolvedOptions()
-      })
-    }, `run Intl.DateTimeFormat().resolvedOptions() ${TIMES} times`)
+      console.log('=== START ===')
 
-    perf(() => {
-      range(TIMES).map(() => {
-        const now = new Date()
-        utcToZonedTime(now, 'America/Sao_Paulo')
-      })
-    }, `run utcToZonedTime(America/Sao_Paulo) ${TIMES} times`)
-
-    perf(() => {
-      range(TIMES).map(() => {
-        const now = new Date()
-        utcToZonedTime(now, undefined)
-      })
-    }, `run utcToZonedTime(undefined) ${TIMES} times`)
-
-    perf(() => {
-      range(TIMES).map(() => {
-        const date = new Date()
-        const fmt = 'd MMM yyyy'
-        const timeZone = 'America/Sao_Paulo'
-        format(date, fmt, {
-          timeZone,
+      perf(() => {
+        range(TIMES).forEach(() => {
+          Intl.DateTimeFormat()
         })
-      })
-    }, `run format() with timezone America/Sao_Paulo ${TIMES} times`)
+      }, `run Intl.DateTimeFormat() ${TIMES} times`)
 
-    perf(() => {
-      range(TIMES).map(() => {
-        const date = new Date()
-        const fmt = 'd MMM yyyy'
-        const timeZone = undefined
-        format(date, fmt, {
-          timeZone,
+      perf(() => {
+        range(TIMES).forEach(() => {
+          Intl.DateTimeFormat().resolvedOptions()
         })
-      })
-    }, `run format() with timezone undefined ${TIMES} times`)
+      }, `run Intl.DateTimeFormat().resolvedOptions() ${TIMES} times`)
 
-    perf(() => {
-      range(TIMES).map(() => {
-        const date = new Date()
-        const fmt = 'd MMM yyyy'
-        format(date, fmt)
-      })
-    }, `run format() without timezone ${TIMES} times`)
+      perf(() => {
+        range(TIMES).forEach(() => {
+          const now = new Date()
+          utcToZonedTime(now, 'America/Sao_Paulo')
+        })
+      }, `run utcToZonedTime(America/Sao_Paulo) ${TIMES} times`)
 
-    perf(() => {
-      range(TIMES).map(() => {
-        const fn = () => { 15 + 25 + 35 * 150 }
-        fn()
-      })
-    }, `run reference fn 1 ${TIMES} times`)
+      perf(() => {
+        range(TIMES).forEach(() => {
+          const now = new Date()
+          utcToZonedTime(now, undefined)
+        })
+      }, `run utcToZonedTime(undefined) ${TIMES} times`)
 
-    perf(() => {
-      const t = (
-        <View><Text>{'AAABBBCCC'}</Text></View>
-      )
-    }, `run reference fn 2 ${TIMES} times`)
+      perf(() => {
+        range(TIMES).forEach(() => {
+          const date = new Date()
+          const fmt = 'd MMM yyyy'
+          const timeZone = 'America/Sao_Paulo'
+          format(date, fmt, {
+            timeZone,
+          })
+        })
+      }, `run format() with timezone America/Sao_Paulo ${TIMES} times`)
 
-    console.log('=== END ===')
+      perf(() => {
+        range(TIMES).forEach(() => {
+          const date = new Date()
+          const fmt = 'd MMM yyyy'
+          const timeZone = undefined
+          format(date, fmt, {
+            timeZone,
+          })
+        })
+      }, `run format() with timezone undefined ${TIMES} times`)
+
+      perf(() => {
+        range(TIMES).forEach(() => {
+          const date = new Date()
+          const fmt = 'd MMM yyyy'
+          format(date, fmt)
+        })
+      }, `run format() without timezone ${TIMES} times`)
+
+      perf(() => {
+        range(TIMES).forEach(() => {
+          const fn = () => { 15 + 25 + 35 * 150 }
+          fn()
+        })
+      }, `run reference fn 1 ${TIMES} times`)
+
+      perf(() => {
+        const t = (
+          <View><Text>{'AAABBBCCC'}</Text></View>
+        )
+      }, `run reference fn 2 ${TIMES} times`)
+
+      console.log('=== END ===')
+    }
+
+    void dotest()
   }
 
   return (
